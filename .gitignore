@@ -4,3 +4,4 @@ docs/plans/
 # 本地开发工作区与 macOS 元数据
 .worktrees/
 .DS_Store
+.superpowers/
