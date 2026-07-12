@@ -1,0 +1,20 @@
+{
+  "common": {
+    "appName": "DailyPotion",
+    "loading": "加载中…",
+    "save": "保存",
+    "cancel": "取消",
+    "confirm": "确认",
+    "clearFilters": "清除筛选",
+    "backHome": "返回首页",
+    "comingSoon": "功能建设中，敬请期待"
+  },
+  "nav": {
+    "home": "首页",
+    "recipes": "配方库",
+    "cabinet": "我的酒柜",
+    "history": "调酒记录",
+    "favorites": "收藏",
+    "profile": "我的"
+  }
+}
