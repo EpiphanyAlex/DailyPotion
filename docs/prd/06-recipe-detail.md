@@ -21,8 +21,8 @@
 
 ### 3.1 Hero
 
-- 展示：配方图、名称（双语）、描述、flavor tags、meta 信息（时长 / ABV / 难度）。
-- 字段来源为 `recipes` 表，定义见[数据模型](01-data-model.md)；双语 fallback 规则见[国际化与全局状态](09-i18n-and-global-states.md)。
+- 展示：配方图、名称（主名 + 可选次要别名）、描述、flavor tags、meta 信息（时长 / ABV / 难度）。
+- 字段来源为 `recipes` 表，定义见[数据模型](01-data-model.md)；显示策略与双语 fallback 规则见[国际化与全局状态](09-i18n-and-global-states.md) §2.3/§2.4（描述、步骤只显当前语言）。
 
 ### 3.2 Ingredients 配料
 
@@ -36,7 +36,9 @@
 
 ### 3.4 Availability Panel 库存匹配面板
 
-- **登录且全部匹配**：显示「You have all ingredients」（success-soft 样式）。
+系统只跟踪基酒/利口酒（`is_spirit = true`），不跟踪果汁、糖浆、装饰物——**面板文案不得声称「全部材料齐备」**（"You have all ingredients" 为错误文案）。
+
+- **登录且 spirit 全部匹配**：显示「所需基酒/利口酒已备齐」（en: "All tracked spirits are available"，success-soft 样式）。
 - **有缺失**：显示「Missing: Campari, Sweet Vermouth」（paper-deep 样式），缺失项为**匹配单元名**；匹配单元定义与 missing 计算逻辑见[匹配引擎](02-matching-engine.md)。
 - **未登录**：显示「登录后查看你的酒柜匹配」+ 登录链接（登录流程见 [Auth](03-auth.md)）。
 
@@ -54,6 +56,7 @@
 
 - 1–5 星，写入 `user_recipe_marks.rating`（表定义见[数据模型](01-data-model.md)），可修改。
 - 仅展示「你的评分」；配方卡与排序使用的官方策展评分（`base_rating` / `base_popularity`）规则见[匹配引擎](02-matching-engine.md)。
+- **两种评分必须分开展示、分别标注**：官方策展分是 3.0–5.0 的一位小数（如 4.6），个人评分是 1–5 整数星——不得把策展分标成 "Your Rating"，也不得共用同一控件。
 
 ### 4.3 Log Your Pour（modal，P0）
 
@@ -61,7 +64,7 @@
 - 字段规格：
   - **日期**（默认今天，不可选未来）
   - **星级**（可空）
-  - **口味 tag chips**（多选，来自固定 tag 字典）
+  - **口味 tag chips**（多选，来自固定的**品饮 tag 字典**，8 词、存 slug）：`balanced` / `refreshing` / `sweet` / `sour` / `bitter` / `strong` / `fruity` / `herbal`。该字典**独立于**配方自身的 `flavor_tags` 词表（11 词，见[数据模型](01-data-model.md)种子内容），两者不共用词表、不共用 messages 命名空间（品饮走 `tasteTags.*`，配方走 `tags.*`）。自由文字感想（如「下次少放美思」）写入笔记，不得做成 tag。
   - **笔记**（≤500 字，可空）
 - 保存后 toast + 写入 History。数据写入 `user_pour_logs` 表，字段定义与约束（含笔记 ≤500 字的应用层校验、口味 tag 存 slug）见[数据模型](01-data-model.md)；History 页展示行为见 [Favorites & History](08-favorites-history.md)。
 
@@ -84,6 +87,6 @@
 
 ## 7. 验收标准
 
-1. 库存状态与酒柜实时一致：添加缺失的酒后回到详情页，Availability Panel 变为全有（「You have all ingredients」）。
+1. 库存状态与酒柜实时一致：添加缺失的酒后回到详情页，Availability Panel 变为全有（「所需基酒/利口酒已备齐」/ "All tracked spirits are available"）。
 2. Log Your Pour 保存后立即出现在 History 页顶部。
 3. 未登录点击 Favorite / Rate / Log 任一操作跳转登录，登录后回到该配方页。

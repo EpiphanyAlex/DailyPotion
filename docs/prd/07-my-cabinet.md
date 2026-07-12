@@ -37,7 +37,9 @@
 - 搜索 `bottles_catalog`（zh/en 名、品牌），结果行带基酒分类色图标；选择后设 owned 或 wishlist。
 - 已在酒柜中的瓶子在结果中标注「已拥有」，不可重复添加（数据库层的唯一性约束见 [01-data-model.md](01-data-model.md)）。
 - **手动添加**：底部手动添加入口（info-soft）：找不到时填自定义名称 + 选择类型（必填，决定匹配）+ 容量（可选），存为自定义酒瓶。自定义瓶以其类型对应的匹配单元参与匹配，规则详见 [02-matching-engine.md](02-matching-engine.md)。
-- 首页空酒柜状态的 Start with Gin / Whisky / Rum 快捷入口会打开本 modal 并预选该类型筛选（见 [04-home-dashboard.md](04-home-dashboard.md)）。
+- 首页两个入口会打开本 modal，**预选机制不同**（见 [04-home-dashboard.md](04-home-dashboard.md)）：
+  - 空酒柜状态的 Start with Gin / Whisky / Rum 快捷入口 → 预选**分类**筛选（`initialCategory`）。
+  - 「最佳下一瓶」扩展区的 Add to Cabinet / Wishlist CTA → 按 `bestNextType` 的**精确匹配单元**预筛选（`initialSpiritTypeId`）：结果列表只显示该匹配单元下的酒瓶（分类 chip 同步选中所属分类，用户可清除精确筛选回退为分类筛选），手动添加表单的类型同步预选——保证添加的瓶子必定解锁承诺的配方。`initialSpiritTypeId` 优先于 `initialCategory`。
 
 ## 7. 状态切换
 

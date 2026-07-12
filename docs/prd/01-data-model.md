@@ -79,6 +79,7 @@ user_bottles
   bottle_id     uuid FK → bottles_catalog, nullable
   custom_name   text              -- 手动添加时使用
   spirit_type_id uuid FK → spirit_types, nullable
+  volume_ml     int               -- 自定义瓶容量，可空；catalog 瓶展示容量取 bottles_catalog.volume_ml
   status        text not null default 'owned'   -- owned|wishlist
   created_at    timestamptz default now()
   -- check：bottle_id 非空，或 (custom_name 与 spirit_type_id 均非空)
@@ -98,7 +99,7 @@ user_pour_logs                    -- 调酒历史（多条）
   recipe_id     uuid FK → recipes on delete cascade
   poured_at     date not null default current_date
   rating        smallint          -- 1–5，可空
-  taste_tags    text[] default '{}'
+  taste_tags    text[] default '{}'  -- 品饮 tag slug，固定 8 词字典见 06-recipe-detail.md §4.3（独立于 recipes.flavor_tags）
   note          text              -- ≤500 字（应用层校验）
   created_at    timestamptz default now()
 ```
@@ -110,9 +111,15 @@ user_pour_logs                    -- 调酒历史（多条）
 | spirit_types / bottles_catalog / recipes / recipe_ingredients | 所有人（含 anon）；recipes 加 `is_public = true or author_id = auth.uid()` | 仅 service role（V1 官方内容经迁移/脚本维护；V2 再开放 `author_id = auth.uid()` 写入） |
 | user_bottles / user_recipe_marks / user_pour_logs | `user_id = auth.uid()` | `user_id = auth.uid()` |
 
-## 6. 种子数据要求
+## 6. 种子数据与发布门槛
 
-- `spirit_types` ≈ 25 条：7 大基酒类 + 常用利口酒/加强酒品种（Campari、Sweet/Dry Vermouth、Triple Sec、Coffee Liqueur、Amaretto 等）。
-- `bottles_catalog` ≈ 60 条常见市售瓶（含 Roku Gin），尽量配图。
-- `recipes` ≥ 50 款经典配方，双语内容完整（名称/描述/步骤/Tip），每款配料完整且 `is_spirit` 标注正确；种子脚本校验：每配方至少 1 条 `is_spirit = true` 配料。
-- 图片：V1 使用可商用图源或自摄，统一比例；缺图时使用 paper-deep 占位（design.md §8），不阻塞上线。
+内容量分两级门槛，**不得混用口径**：
+
+| 门槛 | 含义 | recipes | bottles_catalog | spirit_types | 图片覆盖率 |
+|---|---|---|---|---|---|
+| **Engineering MVP** | Phase 1–8 工程验收口径（功能完整、种子够跑通全部功能） | 20 款（覆盖 7 大基酒） | ≥30（含 Roku Gin） | ≥25 | 不设门槛（缺图用 paper-deep 占位） |
+| **Public V1** | 对外发布口径（达标前不得称「V1 发布完成」） | ≥50 款经典配方 | ≈60 条常见市售瓶 | ≥25 | 配方图 ≥90%，酒瓶图 ≥60%，其余占位 |
+
+- `spirit_types` ≥ 25 条：7 大基酒类 + 常用利口酒/加强酒品种（Campari、Sweet/Dry Vermouth、Triple Sec、Coffee Liqueur、Amaretto 等）。
+- `recipes` 双语内容完整（名称/描述/步骤/Tip），每款配料完整且 `is_spirit` 标注正确；种子脚本校验：每配方至少 1 条 `is_spirit = true` 配料。
+- 图片：使用可商用图源或自摄，统一比例；缺图时使用 paper-deep 占位（design.md §8）。占位不阻塞 Engineering MVP；Public V1 须达上表覆盖率。

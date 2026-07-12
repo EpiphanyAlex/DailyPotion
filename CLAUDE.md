@@ -6,7 +6,7 @@ This file provides guidance to Claude Code when working with DailyPotion.
 
 ## Status: pre-implementation
 
-仓库目前只有需求与设计文档——**无代码、无 package.json**（git 已初始化，远程 `EpiphanyAlex/DailyPotion`）。已完成：PRD（V1 定稿，已按 feature 拆分为 `docs/prd/`）、设计系统 token、11 屏设计稿。下一步是脚手架 + 实施计划。开始写代码后，同步更新本文件的「目录结构」与「命令」两节为实际状态。
+仓库目前只有需求、设计与计划文档——**无代码、无 package.json**（git 已初始化，远程 `EpiphanyAlex/DailyPotion`）。已完成：PRD（V1 定稿，按 feature 拆分为 `docs/prd/`）、设计系统 token、11 屏设计稿、**V1 实施计划（`docs/plans/`，8 个阶段计划 + 跨阶段契约，已过一致性/覆盖审计）**。下一步：按 `docs/plans/README.md` 的顺序执行 Phase 1–8（推荐 superpowers:subagent-driven-development 逐任务执行）。开始写代码后，同步更新本文件的「目录结构」与「命令」两节为实际状态。
 
 ## 文档地图（动手前先读对应权威）
 
@@ -16,6 +16,7 @@ This file provides guidance to Claude Code when working with DailyPotion.
 | 产品概述、版本规划、路由/权限、风险 | `docs/prd/00-overview.md` |
 | 匹配/推荐算法规则 | `docs/prd/02-matching-engine.md` |
 | 数据模型、RLS、种子数据 | `docs/prd/01-data-model.md` |
+| V1 实施计划与跨阶段接口契约 | `docs/plans/`（`README.md` 为索引与契约——执行时计划与契约冲突以契约为准）。**该目录仅存本地、不入 git**（已在 `.gitignore`；脚手架生成新 `.gitignore` 时必须保留 `docs/plans/` 这条） |
 | 视觉 token、组件/页面规格 | `design.md`（视觉唯一权威） |
 | 设计稿源文件 | 根目录 `design_system.pen`——Pencil 加密文件，**只能用 pencil MCP 工具读写**，禁止 Read/Grep |
 | 设计稿参考图 | `design/exports/v2/`（11 屏，索引见 `docs/prd/00-overview.md` 附录） |
@@ -29,7 +30,7 @@ This file provides guidance to Claude Code when working with DailyPotion.
 | UI 只用 `design.md` token 派生的 Tailwind 工具类 | ✅ `bg-paper` `text-ink` `rounded-pill` ❌ `bg-[#F6EFE0]`、`text-[14px]`、任何硬编码色值/字号/间距/圆角/阴影 |
 | 匹配逻辑只存在于 `lib/matching.ts`（无副作用纯函数） | ❌ 在组件/页面里写 canMake、missing 判断 |
 | UI 文案只走 next-intl | ✅ `t('cabinet.addBottle')` ❌ JSX 里写死中文或英文文案 |
-| 数据内容双语双列 | `*_zh` / `*_en`；当前 locale 列为空时 fallback 显示另一语言 |
+| 数据内容双语双列 | `*_zh` / `*_en`；当前 locale 列为空时 fallback 显示另一语言。运行时显示策略见 prd/09 §2.4：UI 文案只显当前语言，实体名可带次要别名，设计稿中英并排只是画稿示意 |
 | 匹配只看基酒/利口酒 | 只取 `recipe_ingredients.is_spirit = true`；辅料仅作配方页提示，不入库存；wishlist 酒瓶不参与匹配 |
 | 数据库变更只走迁移 | ✅ `supabase/migrations/` ❌ 在 Supabase Dashboard 直改表结构 |
 | 所有表启用 RLS | 内容表：任何人可读、仅 service role 写；用户表：`user_id = auth.uid()` 仅本人读写。新表没有 RLS 策略不许合入 |
@@ -41,7 +42,7 @@ This file provides guidance to Claude Code when working with DailyPotion.
 - **多用户预留**：表结构从第一天按多用户设计——`recipes.author_id` nullable + `is_public`；V1 内容全部官方内置，不开放用户创建。
 - **匹配单元 = `spirit_types` 行**：基酒粒度到大类（gin），利口酒粒度到品种（Campari）。不放宽、不细化到具体瓶。
 - **V1 评分用官方策展分** `base_rating` / `base_popularity`，社区聚合评分推迟 V2（`docs/prd/02-matching-engine.md`「评分与热度」）。
-- **响应式断点 768px**：移动端底部药丸 Tab，≥768px 顶部导航（design.md §5）。
+- **双断点响应式**：内容布局 768px 切换；导航壳 1024px 切换——<1024px 底部药丸 Tab，≥1024px 顶部导航（V1 唯一桌面导航；侧边栏为 V2 保留方案，不实现）。见 prd/00 §4.2、design.md §5。
 - **V1 范围**以 `docs/prd/00-overview.md`「版本规划」为准，out-of-scope 清单同样有约束力。
 
 ## 领域术语（与 PRD/代码命名保持一致）

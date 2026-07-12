@@ -53,7 +53,7 @@
 每张配方卡展示：
 
 - 图片；
-- 名称（双语；双语字段的 fallback 规则见 [国际化与全局状态](09-i18n-and-global-states.md)）；
+- 名称（主名 = 当前语言，可选次要别名；显示策略与 fallback 规则见 [国际化与全局状态](09-i18n-and-global-states.md) §2.3/§2.4）；
 - 基酒标签，带分类色点（分类色 token 见 `design.md`）；
 - flavor tags；
 - 评分（V1 为官方策展分 `base_rating`，规则见 [匹配引擎](02-matching-engine.md)「评分与热度」）；
