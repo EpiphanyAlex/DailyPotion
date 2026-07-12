@@ -1,26 +1,132 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * DailyPotion design token 层。
+ * 唯一权威来源：design.md §2–§4。本文件与 design.md 必须保持同步：
+ * 新视觉需求先在 design.md 增加 token，再来这里补变量，最后才写组件。
+ *
+ * - @theme static：全部 token 无论是否被工具类引用，都会输出为 :root 的
+ *   CSS 变量，保证后续阶段可以在任意 CSS / inline style 中 var(--…) 引用。
+ * - 开头的重置区删除了 Tailwind 默认调色板/字号/圆角/阴影/字体族，
+ *   使 bg-red-500、text-sm、rounded-lg、shadow-md 这类非 token 工具类
+ *   直接不存在——从机制上杜绝硬编码视觉值（CLAUDE.md 红线）。
+ *   字体族必须逐个 initial（sans/serif/mono），不能按前缀整片重置：
+ *   整片重置会连带清空同前缀的 font-weight token，令 font-medium/
+ *   font-semibold/font-bold 等字重工具类消失，而 design.md §3 的
+ *   600 字重（font-semibold）是后续阶段的硬需求。
+ *   默认数字 spacing 刻度（p-4、h-10 等）保留，用于纯布局尺寸；
+ *   语义间距一律优先使用 p-xs…p-xxl 等 token 类。
+ */
+@theme static {
+  /* ==== 重置 Tailwind 默认主题 ==== */
+  --color-*: initial;
+  --font-sans: initial;
+  --font-serif: initial;
+  --font-mono: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+
+  /* ==== design.md §2 Color Tokens · Core Palette ==== */
+  --color-paper: #F6EFE0;            /* 页面背景，轻微纸张质感 */
+  --color-paper-raised: #FCF7EA;     /* 卡片、输入框、导航、弹层基础表面 */
+  --color-paper-deep: #EFE5CF;       /* 次级区域、空状态、浅分组背景 */
+  --color-ink: #2E2418;              /* 主文字、强图标 */
+  --color-ink-soft: #5C4F3F;         /* 正文、次级文字 */
+  --color-ink-faint: #726449;        /* 元信息、占位符、未激活图标（各 paper 表面 ≥4.5:1） */
+  --color-accent: #7E2D26;           /* 主操作、active nav、selected filter */
+  --color-on-accent: #F9F3E4;        /* accent/success 深色背景上的文字 */
+  --color-gold: #A97E2F;             /* 细线、少量图标点缀——仅装饰，不承担文字 */
+  --color-text-gold: #7A5A20;        /* kicker、金色小字（10–12px uppercase） */
+  --color-border: #D8CBAE;           /* 1px 装饰描边、分隔线（类名 border-border），不用于表单控件 */
+  --color-control-border: #93805F;   /* 输入框/搜索框等控件边框（各表面 ≥3:1） */
+  --color-success: #55683C;          /* Can Make、Owned、成功状态 */
+
+  /* ==== design.md §2 · Interaction & State Palette ==== */
+  --color-paper-hover: #F8F1E2;      /* 卡片、列表行、chip、导航项 hover 表面 */
+  --color-paper-selected: #F4E4DE;   /* selected chip、active secondary surface */
+  --color-success-soft: #E8EAD8;     /* Can Make/Owned 浅橄榄背景、成功提示条 */
+  --color-image-overlay: rgba(46, 36, 24, 0.42); /* 图片上文字/收藏按钮/遮罩 */
+  --color-accent-hover: #6B241E;     /* 主按钮 / active nav 的 hover */
+  --color-accent-pressed: #571C17;   /* 主按钮按下态 */
+  --color-gold-soft: #F0E3C4;        /* kicker chip 底、rating 高亮底 */
+  --color-focus-ring: #7E2D26;       /* 键盘焦点环（不透明 accent；35% 透明版对比度仅 1.85:1，禁用） */
+  --color-ink-disabled: #B5A98F;     /* 禁用文字 / 图标 */
+  --color-surface-disabled: #F2EBDA; /* 禁用按钮 / 输入框表面 */
+
+  /* ==== design.md §2 · Feedback Palette ==== */
+  --color-danger: #A6402D;           /* 表单错误、删除确认按钮、失败 toast */
+  --color-danger-soft: #F2DCD2;      /* 错误输入框底 / 错误提示条背景 */
+  --color-info: #44606E;             /* 信息提示图标 / 文字、onboarding 引导 */
+  --color-info-soft: #DFE7E4;        /* 信息提示条背景 */
+
+  /* ==== design.md §2 · Spirit Category Palette ====
+     只作小面积识别色（8px 色点、标签文字、图表扇区），
+     不做卡片/按钮大面积底色；浅底用 12–15% 透明度叠 paper。 */
+  --color-spirit-gin: #5C7355;       /* 金酒（杜松绿） */
+  --color-spirit-whisky: #A06B2A;    /* 威士忌（琥珀） */
+  --color-spirit-rum: #7C4A26;       /* 朗姆（焦糖棕） */
+  --color-spirit-vodka: #677B8A;     /* 伏特加（冷灰蓝） */
+  --color-spirit-tequila: #47776B;   /* 龙舌兰（龙舌兰青） */
+  --color-spirit-brandy: #7C3D4F;    /* 白兰地（酒渍梅红） */
+  --color-spirit-liqueur: #6F5680;   /* 利口酒（暗紫藤） */
+
+  /* ==== design.md §2 · Shadow Tokens ==== */
+  --shadow-card: 0 8px 24px rgba(46, 36, 24, 0.08);      /* 卡片轻微纸感阴影 */
+  --shadow-floating: 0 18px 48px rgba(46, 36, 24, 0.16); /* dropdown/modal/sticky */
+
+  /* ==== design.md §3 Typography · 字号 token ====
+     区间取值依据见计划中的「设计取值说明」表。 */
+  --text-recipe-title: clamp(28px, 24px + 1vw, 36px);
+  --text-recipe-title--line-height: 1.15;
+  --text-page-title: clamp(24px, 21px + 0.8vw, 32px);
+  --text-page-title--line-height: 1.15;
+  --text-card-title: 17px;
+  --text-card-title--line-height: 1.3;
+  --text-body: 15px;
+  --text-body--line-height: 1.6;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+  --text-micro: 11px;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 1.5px; /* micro/kicker 需配 uppercase 类使用 */
+
+  /* ==== design.md §4 Spacing ====
+     design.md 原 token 名为 --space-xs…--space-xxl；Tailwind v4 只认
+     "spacing" 前缀的命名空间来生成 p-* / m-* / gap-* 工具类，故此处
+     落成 spacing-xs…xxl。这是计划显式批准的唯一必要重命名，工具类
+     不受影响（p-xs / gap-xl / space-y-md 照常可用）。 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+
+  /* ==== design.md §4 Radius ==== */
+  --radius-sm: 6px;    /* 输入框、缩略图、行内状态 */
+  --radius-md: 10px;   /* 卡片、面板、图片 */
+  --radius-pill: 999px; /* 按钮、徽章、chip、tab item */
 }
 
+/*
+ * design.md §3 字体族 token。
+ * 值里引用的 playfair/lora/inter/noto 变量由 next/font 在 <html> 上注入
+ * （Task 4 / app/fonts.ts）；在 Task 4 完成前回退到 var() 的第二参数
+ * （本机已装同名字体则生效，否则回退到通用 serif/sans-serif，不影响构建）。
+ * 用 @theme inline 是因为值引用了运行时才定义的 CSS 变量。
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-playfair, "Playfair Display"), var(--font-noto-serif-sc, "Noto Serif SC"), serif;
+  --font-body: var(--font-lora, "Lora"), var(--font-noto-serif-sc, "Noto Serif SC"), serif;
+  --font-ui: var(--font-inter, "Inter"), var(--font-noto-sans-sc, "Noto Sans SC"), system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+ * design.md §2 Color Rules：「所有可聚焦元素必须有 focus-ring 键盘焦点环
+ * （2px outline + 2px offset）」。用法：className="focus-visible:focus-ring"。
+ */
+@utility focus-ring {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
 }
