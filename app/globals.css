@@ -92,10 +92,7 @@
   --text-micro--letter-spacing: 1.5px; /* micro/kicker 需配 uppercase 类使用 */
 
   /* ==== design.md §4 Spacing ====
-     design.md 原 token 名为 --space-xs…--space-xxl；Tailwind v4 只认
-     "spacing" 前缀的命名空间来生成 p-* / m-* / gap-* 工具类，故此处
-     落成 spacing-xs…xxl。这是计划显式批准的唯一必要重命名，工具类
-     不受影响（p-xs / gap-xl / space-y-md 照常可用）。 */
+     Tailwind v4 的 spacing 命名空间生成 p-* / m-* / gap-* 工具类。 */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;

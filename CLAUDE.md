@@ -4,9 +4,9 @@ This file provides guidance to Claude Code when working with DailyPotion.
 
 酒柜管理 + 鸡尾酒配方推荐 Web 应用：记录家中的酒（如 Roku Gin），按基酒匹配推荐能调的鸡尾酒；配方库支持浏览/筛选/收藏/调酒记录；未来扩展用户分享配方与 RAG chatbot（路线图见 `docs/prd/00-overview.md`）。
 
-## Status: pre-implementation
+## Status: Phase 1 foundation implemented
 
-仓库目前只有需求、设计与计划文档——**无代码、无 package.json**（git 已初始化，远程 `EpiphanyAlex/DailyPotion`）。已完成：PRD（V1 定稿，按 feature 拆分为 `docs/prd/`）、设计系统 token、11 屏设计稿、**V1 实施计划（`docs/plans/`，8 个阶段计划 + 跨阶段契约，已过一致性/覆盖审计）**。下一步：按 `docs/plans/README.md` 的顺序执行 Phase 1–8（推荐 superpowers:subagent-driven-development 逐任务执行）。开始写代码后，同步更新本文件的「目录结构」与「命令」两节为实际状态。
+Phase 1 的本地工程基线已经就绪：Next.js 15 App Router、React 19、TypeScript strict、Tailwind CSS 4、Vitest 3、next-intl 双语路由、五套 next/font 字体与 10 个占位页面均已实现并通过本地验收。远程仓库为 `EpiphanyAlex/DailyPotion`；Vercel 生产部署接入中。PRD、设计系统 token、11 屏设计稿与 V1 实施计划保持为后续阶段的事实源。下一步按 `docs/plans/README.md` 的顺序执行 Phase 2–8（推荐 superpowers:subagent-driven-development 逐任务执行）。
 
 ## 文档地图（动手前先读对应权威）
 
@@ -53,29 +53,33 @@ This file provides guidance to Claude Code when working with DailyPotion.
 - **owned / wishlist**：`user_bottles.status`，只有 owned 参与匹配。
 - **Log Your Pour / pour log**：一次调酒记录 → `user_pour_logs`（多条历史）；收藏与评分是单条状态 → `user_recipe_marks`。
 
-## 规划目录结构（脚手架时按此建立）
+## 当前目录结构
 
 ```
-app/[locale]/            # 页面路由（路由表见 docs/prd/00-overview.md 信息架构）
-app/globals.css          # Tailwind v4 @theme，token 与 design.md 同步
-components/ui/           # 通用组件（按钮/chip/卡片/modal，对应 design.md §5）
-components/<feature>/    # 功能组件（dashboard、recipes、cabinet…）
-lib/matching.ts          # 匹配/推荐纯函数（唯一位置）
-lib/supabase/            # Supabase 客户端与查询
-messages/zh.json|en.json # UI 文案
-supabase/migrations/     # 数据库迁移
-supabase/seed/           # 种子数据脚本
+app/[locale]/             # 10 个双语页面路由与 locale layout
+app/fonts.ts              # 五套 next/font 字体及 CSS variables
+app/globals.css           # Tailwind v4 @theme，token 与 design.md 同步
+i18n/routing.ts           # locale、默认语言与 URL 前缀策略
+i18n/request.ts           # next-intl 请求配置与 messages 加载
+messages/zh.json|en.json  # 当前 UI 文案
+middleware.ts             # Accept-Language / cookie locale 路由
+lib/sanity.ts             # Vitest 与 @/* alias 的最小 sanity 模块
 ```
+
+`components/`、`lib/matching.ts`、`lib/supabase/` 与 `supabase/` 尚未创建，分别由后续功能、Phase 3 与 Phase 2 引入。
 
 ## 数据模型速查（字段定义见 `docs/prd/01-data-model.md`）
 
 - 内容表（4）：`spirit_types`（匹配单元）、`bottles_catalog`、`recipes`、`recipe_ingredients`
 - 用户表（3）：`user_bottles`、`user_recipe_marks`（收藏+评分）、`user_pour_logs`（调酒历史）
 
-## 命令与测试协议（脚手架后生效）
+## 命令与测试协议
 
+- `npm install` — 安装锁文件固定的依赖
 - `npm run dev` — 本地开发
 - `npm test` — 单元测试；**matching 模块必须有测试**，用例清单见 `docs/prd/02-matching-engine.md`「单元测试要求」，改动 `lib/matching.ts` 必须先过全部用例
+- `npm run lint` — ESLint 静态检查
 - `npm run build` — 生产构建，提交前必须通过
+- `npm run start` — 启动已构建的生产服务器
 
 改动顺序：改 UI → 浏览器里过一遍相关验收标准（`docs/prd/` 对应 feature PRD）；改 matching → `npm test`；任何提交前 → `npm run build`。

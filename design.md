@@ -130,12 +130,12 @@
 
 | Token | Value |
 |---|---:|
-| `--space-xs` | `4px` |
-| `--space-sm` | `8px` |
-| `--space-md` | `12px` |
-| `--space-lg` | `16px` |
-| `--space-xl` | `24px` |
-| `--space-xxl` | `32px` |
+| `--spacing-xs` | `4px` |
+| `--spacing-sm` | `8px` |
+| `--spacing-md` | `12px` |
+| `--spacing-lg` | `16px` |
+| `--spacing-xl` | `24px` |
+| `--spacing-xxl` | `32px` |
 
 | Token | Value | Usage |
 |---|---:|---|
