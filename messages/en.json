@@ -16,5 +16,15 @@
     "history": "History",
     "favorites": "Favorites",
     "profile": "Profile"
+  },
+  "spiritCategory": {
+    "gin": "Gin",
+    "whisky": "Whisky",
+    "rum": "Rum",
+    "vodka": "Vodka",
+    "tequila": "Tequila",
+    "brandy": "Brandy",
+    "liqueur": "Liqueur",
+    "other": "Other"
   }
 }

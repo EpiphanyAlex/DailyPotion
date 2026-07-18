@@ -16,5 +16,15 @@
     "history": "调酒记录",
     "favorites": "收藏",
     "profile": "我的"
+  },
+  "spiritCategory": {
+    "gin": "金酒",
+    "whisky": "威士忌",
+    "rum": "朗姆酒",
+    "vodka": "伏特加",
+    "tequila": "龙舌兰",
+    "brandy": "白兰地",
+    "liqueur": "利口酒",
+    "other": "其他"
   }
 }
