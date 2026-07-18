@@ -12,27 +12,48 @@ select has_table('public'::name, 'user_bottles'::name);
 select has_table('public'::name, 'user_recipe_marks'::name);
 select has_table('public'::name, 'user_pour_logs'::name);
 
-select has_check('public', 'spirit_types', 'spirit_types_category_check');
-select has_check('public', 'spirit_types', 'spirit_types_sort_order_check');
-select has_check('public', 'bottles_catalog', 'bottles_catalog_volume_check');
-select has_check('public', 'recipes', 'recipes_difficulty_check');
-select has_check('public', 'recipes', 'recipes_prep_minutes_check');
-select has_check('public', 'recipes', 'recipes_abv_check');
-select has_check('public', 'recipes', 'recipes_flavor_tags_check');
-select has_check('public', 'recipes', 'recipes_base_rating_check');
-select has_check('public', 'recipes', 'recipes_base_popularity_check');
-select has_check('public', 'recipe_ingredients', 'recipe_ingredients_spirit_type_required');
-select has_check('public', 'recipe_ingredients', 'recipe_ingredients_name_required');
-select has_check('public', 'recipe_ingredients', 'recipe_ingredients_amount_check');
-select has_check('public', 'recipe_ingredients', 'recipe_ingredients_sort_order_check');
-select has_check('public', 'user_bottles', 'user_bottles_source_check');
-select has_check('public', 'user_bottles', 'user_bottles_volume_check');
-select has_check('public', 'user_bottles', 'user_bottles_status_check');
-select has_check('public', 'user_recipe_marks', 'user_recipe_marks_rating_check');
-select has_check('public', 'user_pour_logs', 'user_pour_logs_not_future');
-select has_check('public', 'user_pour_logs', 'user_pour_logs_rating_check');
-select has_check('public', 'user_pour_logs', 'user_pour_logs_taste_tags_check');
-select has_check('public', 'user_pour_logs', 'user_pour_logs_note_check');
+with expected_checks(table_name, constraint_name) as (
+  values
+    ('spirit_types', 'spirit_types_category_check'),
+    ('spirit_types', 'spirit_types_sort_order_check'),
+    ('bottles_catalog', 'bottles_catalog_volume_check'),
+    ('recipes', 'recipes_difficulty_check'),
+    ('recipes', 'recipes_prep_minutes_check'),
+    ('recipes', 'recipes_abv_check'),
+    ('recipes', 'recipes_flavor_tags_check'),
+    ('recipes', 'recipes_base_rating_check'),
+    ('recipes', 'recipes_base_popularity_check'),
+    ('recipe_ingredients', 'recipe_ingredients_spirit_type_required'),
+    ('recipe_ingredients', 'recipe_ingredients_name_required'),
+    ('recipe_ingredients', 'recipe_ingredients_amount_check'),
+    ('recipe_ingredients', 'recipe_ingredients_sort_order_check'),
+    ('user_bottles', 'user_bottles_source_check'),
+    ('user_bottles', 'user_bottles_volume_check'),
+    ('user_bottles', 'user_bottles_status_check'),
+    ('user_recipe_marks', 'user_recipe_marks_rating_check'),
+    ('user_pour_logs', 'user_pour_logs_not_future'),
+    ('user_pour_logs', 'user_pour_logs_rating_check'),
+    ('user_pour_logs', 'user_pour_logs_taste_tags_check'),
+    ('user_pour_logs', 'user_pour_logs_note_check')
+)
+select ok(
+  exists(
+    select 1
+    from pg_constraint c
+    join pg_class t on t.oid = c.conrelid
+    join pg_namespace n on n.oid = t.relnamespace
+    where n.nspname = 'public'
+      and t.relname = expected_checks.table_name
+      and c.conname = expected_checks.constraint_name
+      and c.contype = 'c'
+  ),
+  format(
+    'public.%I has check constraint %I',
+    expected_checks.table_name,
+    expected_checks.constraint_name
+  )
+)
+from expected_checks;
 
 select has_index('public'::name, 'bottles_catalog'::name, 'bottles_catalog_spirit_type_idx'::name);
 select has_index('public'::name, 'recipe_ingredients'::name, 'recipe_ingredients_recipe_idx'::name);
