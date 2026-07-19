@@ -26,3 +26,22 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run build
+
+  database:
+    name: Database
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx supabase start
+      - run: npx supabase db reset
+      - run: npx supabase test db
+      - run: npm run db:verify
+      - run: npm test
+      - run: npm run build
+      - if: always()
+        run: npx supabase stop --no-backup
