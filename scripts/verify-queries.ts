@@ -291,17 +291,17 @@ try {
   assert((await fetchUserBottles(clientA)).length === 0, 'owner 删除 catalog 酒瓶后仍可查询到')
 } catch (error) {
   verificationError = error
-}
+} finally {
+  const cleanupErrors: unknown[] = []
+  for (const userId of createdUserIds.reverse()) {
+    const { error } = await admin.auth.admin.deleteUser(userId)
+    if (error) cleanupErrors.push(error)
+  }
 
-const cleanupErrors: unknown[] = []
-for (const userId of createdUserIds.reverse()) {
-  const { error } = await admin.auth.admin.deleteUser(userId)
-  if (error) cleanupErrors.push(error)
-}
-
-if (cleanupErrors.length > 0) {
-  const errors = verificationError === undefined ? cleanupErrors : [verificationError, ...cleanupErrors]
-  throw new AggregateError(errors, 'query verifier cleanup 失败')
+  if (cleanupErrors.length > 0) {
+    const errors = verificationError === undefined ? cleanupErrors : [verificationError, ...cleanupErrors]
+    throw new AggregateError(errors, 'query verifier cleanup 失败')
+  }
 }
 if (verificationError !== undefined) throw verificationError
 
