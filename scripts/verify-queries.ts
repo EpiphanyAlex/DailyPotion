@@ -1,6 +1,6 @@
 // scripts/verify-queries.ts —— 契约 B 全部查询函数的本地联网验收（npm run db:verify）
 import { randomUUID } from 'node:crypto'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { createClient as createRawClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/supabase'
 import {
@@ -21,9 +21,11 @@ import {
   upsertRecipeMark,
 } from '@/lib/supabase/queries'
 
-for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
-  const m = line.match(/^([A-Z0-9_]+)=(.*)$/)
-  if (m) process.env[m[1]] ??= m[2]
+if (existsSync('.env.local')) {
+  for (const line of readFileSync('.env.local', 'utf8').split('\n')) {
+    const m = line.match(/^([A-Z0-9_]+)=(.*)$/)
+    if (m) process.env[m[1]] ??= m[2]
+  }
 }
 
 function requiredEnv(name: string): string {
