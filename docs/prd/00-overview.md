@@ -118,7 +118,7 @@ V1 桌面导航**只有顶部导航一套**；侧边栏壳（design.md §5 optio
 - **响应式**：内容布局断点 768px，导航壳断点 1024px（见 §4.2，布局规则见 design.md §5/§7）；移动端无横向滚动。
 - **可访问性**：全部可聚焦元素有 focus-ring；图片有 alt（配方/酒瓶名）；色彩对比满足 WCAG AA；modal 可 Esc 关闭、焦点圈闭。
 - **SEO**：配方详情 SSG，`hreflang` 双语互指，OG 图用配方图。
-- **安全**：所有表 RLS 开启（策略见 [数据模型](01-data-model.md)）；服务端写操作校验登录态；不暴露 service key 到客户端。
+- **安全**：所有表以最小显式 grants + RLS 双层保护（策略见 [数据模型](01-data-model.md)）；服务端写操作校验登录态；客户端只使用 publishable key，不暴露 secret/service key。
 - **浏览器**：最新两个大版本的 Chrome / Safari / Firefox / Edge，iOS Safari ≥ 16。
 
 ## 6. 成功指标（轻量）
