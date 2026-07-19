@@ -11,7 +11,8 @@
     "start": "next start",
     "lint": "eslint",
     "test": "vitest run",
-    "seed": "bash scripts/seed.sh"
+    "seed": "bash scripts/seed.sh",
+    "db:types": "bash scripts/gen-supabase-types.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
