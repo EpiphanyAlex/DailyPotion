@@ -16,7 +16,7 @@
 
 ## 本地启动
 
-需要 Node.js 18.18 或更高版本，以及 npm。
+需要 Node.js 22.0 或更高版本，以及 npm。
 
 ```bash
 git clone git@github.com:EpiphanyAlex/DailyPotion.git

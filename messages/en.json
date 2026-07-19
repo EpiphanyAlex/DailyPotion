@@ -16,5 +16,28 @@
     "history": "History",
     "favorites": "Favorites",
     "profile": "Profile"
+  },
+  "spiritCategory": {
+    "gin": "Gin",
+    "whisky": "Whisky",
+    "rum": "Rum",
+    "vodka": "Vodka",
+    "tequila": "Tequila",
+    "brandy": "Brandy",
+    "liqueur": "Liqueur",
+    "other": "Other"
+  },
+  "tags": {
+    "bitter": "Bitter",
+    "herbal": "Herbal",
+    "classic": "Classic",
+    "strong": "Strong",
+    "sour": "Sour",
+    "citrus": "Citrus",
+    "refreshing": "Refreshing",
+    "minty": "Minty",
+    "sweet": "Sweet",
+    "fruity": "Fruity",
+    "creamy": "Creamy"
   }
 }

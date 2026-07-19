@@ -16,5 +16,28 @@
     "history": "调酒记录",
     "favorites": "收藏",
     "profile": "我的"
+  },
+  "spiritCategory": {
+    "gin": "金酒",
+    "whisky": "威士忌",
+    "rum": "朗姆酒",
+    "vodka": "伏特加",
+    "tequila": "龙舌兰",
+    "brandy": "白兰地",
+    "liqueur": "利口酒",
+    "other": "其他"
+  },
+  "tags": {
+    "bitter": "苦韵",
+    "herbal": "草本",
+    "classic": "经典",
+    "strong": "烈劲",
+    "sour": "酸爽",
+    "citrus": "柑橘",
+    "refreshing": "清爽",
+    "minty": "薄荷",
+    "sweet": "甜润",
+    "fruity": "果香",
+    "creamy": "绵密"
   }
 }
