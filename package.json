@@ -12,7 +12,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "seed": "bash scripts/seed.sh",
-    "db:types": "bash scripts/gen-supabase-types.sh"
+    "db:types": "bash scripts/gen-supabase-types.sh",
+    "db:verify": "bash scripts/verify-queries.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
