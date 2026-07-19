@@ -66,7 +66,7 @@
   - **星级**（可空）
   - **口味 tag chips**（多选，来自固定的**品饮 tag 字典**，8 词、存 slug）：`balanced` / `refreshing` / `sweet` / `sour` / `bitter` / `strong` / `fruity` / `herbal`。该字典**独立于**配方自身的 `flavor_tags` 词表（11 词，见[数据模型](01-data-model.md)种子内容），两者不共用词表、不共用 messages 命名空间（品饮走 `tasteTags.*`，配方走 `tags.*`）。自由文字感想（如「下次少放美思」）写入笔记，不得做成 tag。
   - **笔记**（≤500 字，可空）
-- 保存后 toast + 写入 History。数据写入 `user_pour_logs` 表，字段定义与约束（含笔记 ≤500 字的应用层校验、口味 tag 存 slug）见[数据模型](01-data-model.md)；History 页展示行为见 [Favorites & History](08-favorites-history.md)。
+- 保存后 toast + 写入 History。数据写入 `user_pour_logs` 表：笔记 ≤500 字、日期不得在未来、口味 tag 只存 §4.3 的 8 个 slug；应用层先校验，数据库约束作为最终防线（见[数据模型](01-data-model.md)）。History 页展示行为见 [Favorites & History](08-favorites-history.md)。
 
 ### 4.4 Share（P1）
 
