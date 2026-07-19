@@ -10,7 +10,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seed": "bash scripts/seed.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.3",
