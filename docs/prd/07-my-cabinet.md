@@ -54,6 +54,7 @@
 ## 9. 全局反馈
 
 - 酒柜变更属写操作：乐观更新 + 失败回滚 + danger toast，遵循 [09-i18n-and-global-states.md](09-i18n-and-global-states.md) 的全局状态与反馈规范。
+- 添加、移除及 owned/wishlist 切换成功后重取当前用户酒瓶，并让首页、配方库和详情的匹配视图重新计算；失败回滚显示并保留弹窗输入供重试。同一瓶的待处理操作不可重复提交。跨页验收场景见 [交互验收](../engineering/interaction-acceptance.md)。
 
 ## 10. 验收标准
 

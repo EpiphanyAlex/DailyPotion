@@ -38,9 +38,11 @@ Auth 是产品核心循环「添加酒瓶 → 看到你能调 N 款 → 记录 &
 
 - 有 `redirect` 参数时回原页，否则去 `/{locale}`。
 - 登录/注册页路由为 `/{locale}/login`、`/{locale}/signup`，未登录访问受保护路由（如 `/{locale}/cabinet`）的重定向规则见 [00-overview.md](00-overview.md) 路由表与权限矩阵。
+- 登录、登出或切换账号时，页面清除旧账号的私人查询投影和乐观显示，再读取当前账号数据；旧账号的迟到响应不能进入新会话。账号隔离验收见 [交互验收](../engineering/interaction-acceptance.md)。
 
 ## 3. 验收标准
 
 - 新用户可完成注册 → 收到确认邮件 → 确认后登录成功。
 - 未登录访问 `/cabinet` 被重定向到 `/login?redirect=/cabinet`，登录后回到酒柜页。
 - 错误态视觉符合 `design.md` 表单规格（danger-soft 底 + danger 边 + 图标文案）。
+- 两个账号先后登录同一浏览器时，后者看不到前者的酒柜、收藏和调酒记录；数据库 RLS 拒绝跨账号读写。

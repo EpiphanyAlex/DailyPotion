@@ -2,7 +2,7 @@
 
 面向家庭调酒爱好者的酒柜管理与鸡尾酒配方推荐 Web 应用。记录家中的酒瓶，按基酒与利口酒匹配现在能调什么、还差什么，再用清晰的双语配方把“家里有一瓶酒”变成“今晚调一杯”。
 
-状态：Phase 1 基础工程已完成本地实现与验收。Next.js 15 脚手架、Vitest 3、Tailwind v4 设计 token、五套字体、双语路由与 10 个占位页面均已就绪；Vercel 生产部署接入中。更新于 2026-07-13。
+状态：Phase 1 基础工程与 Phase 2 Supabase 数据层已合入；匹配函数和 10 个业务页面仍待后续阶段实现。架构、交互与视觉验收约定见下方文档地图。更新于 2026-10-02。
 
 ## 当前基线
 
@@ -46,6 +46,10 @@ npm run dev
 | [`docs/prd/00-overview.md`](docs/prd/00-overview.md) | 产品范围、版本路线、路由、权限与非功能要求 |
 | [`docs/prd/01-data-model.md`](docs/prd/01-data-model.md) | 数据模型、RLS、约束与内容基线 |
 | [`docs/prd/02-matching-engine.md`](docs/prd/02-matching-engine.md) | 可调判断、缺失项、每日推荐与排序规则 |
+| [`docs/architecture.md`](docs/architecture.md) | Next.js + Supabase 的数据与状态边界；当前实现状态 |
+| [`docs/adr/README.md`](docs/adr/README.md) | 跨页面决定与轻量 ADR 约定 |
+| [`docs/engineering/interaction-acceptance.md`](docs/engineering/interaction-acceptance.md) | 分阶段交互测试场景 |
+| [`docs/engineering/visual-acceptance.md`](docs/engineering/visual-acceptance.md) | 首个真实页面起的视觉验收矩阵 |
 | [`design.md`](design.md) | 视觉 token、组件规格、响应式规则与页面结构的唯一权威 |
 | [`design/exports/v2/`](design/exports/v2/) | 11 张设计参考图 |
 | `design_system.pen` | Pencil 设计源文件；通过 Pencil 工具读写 |
