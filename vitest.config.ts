@@ -12,7 +12,7 @@ export default defineConfig({
   },
   test: {
     include: ['**/*.test.ts', '**/*.test.tsx'],
-    exclude: ['node_modules/**', '.next/**'],
+    exclude: ['**/node_modules/**', '**/.next/**', '.worktrees/**'],
     environment: 'node',
   },
 })

@@ -32,7 +32,9 @@ npm run dev
 | `npm run dev` | 启动 Turbopack 开发服务器 |
 | `npm test` | 运行 Vitest 单元测试 |
 | `npm run lint` | 运行 ESLint |
+| `npm run typecheck` | 独立运行 TypeScript 类型检查 |
 | `npm run build` | 构建生产版本并执行类型检查 |
+| `npm run verify` | 顺序运行 lint、typecheck、test、build；CI 使用同一命令 |
 | `npm run start` | 启动已构建的生产服务器 |
 
 ## 文档地图
@@ -40,6 +42,7 @@ npm run dev
 | 文档 | 作用 |
 |---|---|
 | [`docs/prd/README.md`](docs/prd/README.md) | PRD 索引；进入各功能需求的起点 |
+| [`docs/engineering/ci-prd.md`](docs/engineering/ci-prd.md) | CI 工程 PRD、范围与验收标准 |
 | [`docs/prd/00-overview.md`](docs/prd/00-overview.md) | 产品范围、版本路线、路由、权限与非功能要求 |
 | [`docs/prd/01-data-model.md`](docs/prd/01-data-model.md) | 数据模型、RLS、约束与内容基线 |
 | [`docs/prd/02-matching-engine.md`](docs/prd/02-matching-engine.md) | 可调判断、缺失项、每日推荐与排序规则 |
