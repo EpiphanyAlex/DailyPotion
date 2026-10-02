@@ -84,6 +84,7 @@
 ## 6. 全局状态与反馈
 
 - 详情页需提供 skeleton 加载布局；收藏 / 评分 / 记录等写操作采用乐观更新 + 失败回滚 + danger toast。全局规则见[国际化与全局状态](09-i18n-and-global-states.md)。
+- 快速从配方 A 切到 B 时，A 的迟到内容、匹配和收藏响应不得覆盖 B。收藏写入失败恢复先前状态；成功后重取个人 marks，并同步配方卡和 Favorites。可控延迟与失败场景见 [交互验收](../engineering/interaction-acceptance.md)。
 
 ## 7. 验收标准
 

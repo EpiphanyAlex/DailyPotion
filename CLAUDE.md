@@ -4,9 +4,9 @@ This file provides guidance to Claude Code when working with DailyPotion.
 
 酒柜管理 + 鸡尾酒配方推荐 Web 应用：记录家中的酒（如 Roku Gin），按基酒匹配推荐能调的鸡尾酒；配方库支持浏览/筛选/收藏/调酒记录；未来扩展用户分享配方与 RAG chatbot（路线图见 `docs/prd/00-overview.md`）。
 
-## Status: Phase 1 foundation implemented
+## Status: Phase 2 data layer implemented
 
-Phase 1 的本地工程基线已经就绪：Next.js 15 App Router、React 19、TypeScript strict、Tailwind CSS 4、Vitest 3、next-intl 双语路由、五套 next/font 字体与 10 个占位页面均已实现并通过本地验收。远程仓库为 `EpiphanyAlex/DailyPotion`；Vercel 生产部署接入中。PRD、设计系统 token、11 屏设计稿与 V1 实施计划保持为后续阶段的事实源。下一步按 `docs/plans/README.md` 的顺序执行 Phase 2–8（推荐 superpowers:subagent-driven-development 逐任务执行）。
+Phase 1 工程基线和 Phase 2 Supabase 数据层已合入：迁移、RLS、种子数据、类型、查询层与数据库契约测试就绪。`lib/matching.ts` 目前只有类型，10 个路由仍是占位页面；下一步按 `docs/plans/README.md` 的顺序执行 Phase 3–8。远程仓库为 `EpiphanyAlex/DailyPotion`。PRD、设计 token 与 V1 实施计划仍是后续阶段的事实源；跨页面数据流与状态边界见 `docs/architecture.md`。
 
 ## 文档地图（动手前先读对应权威）
 
@@ -66,7 +66,7 @@ middleware.ts             # Accept-Language / cookie locale 路由
 lib/sanity.ts             # Vitest 与 @/* alias 的最小 sanity 模块
 ```
 
-`components/`、`lib/matching.ts`、`lib/supabase/` 与 `supabase/` 尚未创建，分别由后续功能、Phase 3 与 Phase 2 引入。
+`lib/matching.ts` 只有类型；`lib/supabase/`、`supabase/` 已由 Phase 2 引入。`components/` 与业务页面仍待后续阶段。
 
 ## 数据模型速查（字段定义见 `docs/prd/01-data-model.md`）
 

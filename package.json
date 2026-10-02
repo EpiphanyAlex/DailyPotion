@@ -9,8 +9,10 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint . --max-warnings 0",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build",
     "seed": "bash scripts/seed.sh",
     "db:types": "bash scripts/gen-supabase-types.sh",
     "db:verify": "bash scripts/verify-queries.sh"
