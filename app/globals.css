@@ -99,6 +99,8 @@
   --spacing-lg: 16px;
   --spacing-xl: 24px;
   --spacing-xxl: 32px;
+  --spacing-auth-brand: 48px;
+  --spacing-auth-top: 20vh;
 
   /* ==== design.md §4 Radius ==== */
   --radius-sm: 6px;    /* 输入框、缩略图、行内状态 */

@@ -48,14 +48,17 @@
   },
   "auth": {
     "brand": {
-      "slogan": "Know your cabinet. Mix tonight's pour."
+      "slogan": "Your home bar companion"
     },
     "login": {
       "kicker": "Welcome back",
       "title": "Welcome back",
-      "subtitle": "Sign in to see your cabinet and pour history",
+      "subtitle": "Sign in to see your cabinet and today's picks.",
       "emailLabel": "Email",
+      "emailPlaceholder": "alex@example.com",
       "passwordLabel": "Password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
       "submit": "Sign in",
       "noAccount": "No account yet?",
       "signupLink": "Sign up",

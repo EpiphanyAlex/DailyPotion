@@ -136,6 +136,8 @@
 | `--spacing-lg` | `16px` |
 | `--spacing-xl` | `24px` |
 | `--spacing-xxl` | `32px` |
+| `--spacing-auth-brand` | `48px` |
+| `--spacing-auth-top` | `20vh` |
 
 | Token | Value | Usage |
 |---|---:|---|
@@ -241,7 +243,8 @@ Recipe Detail 是可执行调酒流程，不只是文章页。
 
 ### Auth（登录 / 注册）
 
-- **桌面**：左右分屏——左侧真实鸡尾酒图 + `image-overlay` 遮罩 + 底部品牌名（Playfair 斜体）与 slogan；右侧居中表单列（宽 400）。
+- **桌面**：左右分屏，比例 4:5。当前 v2 导出稿的左侧为 `paper-deep` + `image-overlay` 的纯色图片占位面，底部品牌名（Playfair 斜体）与 slogan 距边缘 48px；右侧 `paper` 表单列宽 400px，距视口顶部约 20vh。正式鸡尾酒图片到位后可替换占位面，保留遮罩与品牌位置。
+- 登录页中文标题用 `font-ui` 700，与 v2 画稿中的重字重一致；英文标题保留 `font-display`。密码框右侧提供可切换明文的眼睛图标。
 - **移动**：单列——logo、kicker、标题、说明文、表单、主按钮、切换链接；沿用页面 20-24px 边距。
 - 表单规格：label 用 `font-ui` caption 600 `ink-soft`；输入框高 44、`paper-raised` + `control-border` + `radius-sm`；焦点态 `focus-ring`（统一 2px outline + 2px offset）；错误态 `danger-soft` 底 + 1.5px `danger` 边 + 下方 icon+`danger` 文案；未通过校验时主按钮为禁用态（`surface-disabled` + `ink-disabled`）。
 - 表单规则以 `docs/prd/03-auth.md` 为准：密码 ≥8 位（无字母+数字组合要求）、注册含两次密码一致校验；画稿缺确认密码框、多写的密码规则属画稿错误（见附录 backlog）。
