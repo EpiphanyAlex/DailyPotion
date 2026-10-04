@@ -11,11 +11,17 @@
   },
   "nav": {
     "home": "Home",
+    "today": "Today",
     "recipes": "Recipes",
     "cabinet": "Cabinet",
     "history": "History",
     "favorites": "Favorites",
-    "profile": "Profile"
+    "profile": "Profile",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "accountMenu": "Account menu",
+    "localeZh": "中文",
+    "localeEn": "English"
   },
   "spiritCategory": {
     "gin": "Gin",
@@ -39,5 +45,73 @@
     "sweet": "Sweet",
     "fruity": "Fruity",
     "creamy": "Creamy"
+  },
+  "auth": {
+    "brand": {
+      "slogan": "Know your cabinet. Mix tonight's pour."
+    },
+    "login": {
+      "kicker": "Welcome back",
+      "title": "Welcome back",
+      "subtitle": "Sign in to see your cabinet and pour history",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "submit": "Sign in",
+      "noAccount": "No account yet?",
+      "signupLink": "Sign up",
+      "forgotPassword": "Forgot password?",
+      "confirmedBanner": "Email confirmed. Please sign in."
+    },
+    "signup": {
+      "kicker": "Create account",
+      "title": "Create your account",
+      "subtitle": "Three steps: sign up → add your first bottle → see what you can mix",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Sign up",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "checkEmailTitle": "Confirmation email sent",
+      "checkEmailBody": "Check the inbox of {email} and click the confirmation link, then come back to sign in."
+    },
+    "reset": {
+      "kicker": "Account recovery",
+      "title": "Reset password",
+      "subtitle": "Enter your account email and we'll send a reset link",
+      "emailLabel": "Email",
+      "submit": "Send reset email",
+      "sent": "Reset email sent. Check your inbox.",
+      "updateTitle": "Set a new password",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm new password",
+      "updateSubmit": "Update password",
+      "backToLogin": "Back to sign in",
+      "expired": "Your reset session has expired. Request another email."
+    },
+    "validation": {
+      "emailInvalid": "Please enter a valid email address",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "errors": {
+      "invalidInput": "Please check the form",
+      "invalidCredentials": "Incorrect email or password",
+      "emailExists": "This email is already registered. Sign in instead.",
+      "emailNotConfirmed": "Please confirm your email first",
+      "weakPassword": "Password is too weak. Use at least 8 characters.",
+      "samePassword": "New password must be different from the old one",
+      "rateLimited": "Too many attempts. Please try again later.",
+      "sessionExpired": "Your session has expired. Request another reset email.",
+      "callback": "The link is invalid or has expired. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "emailLabel": "Email",
+    "languageLabel": "Language",
+    "historyLink": "Pour history",
+    "signOut": "Sign out"
   }
 }
