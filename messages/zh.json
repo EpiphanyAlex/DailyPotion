@@ -48,14 +48,17 @@
   },
   "auth": {
     "brand": {
-      "slogan": "记录你的酒柜，调出今天这一杯"
+      "slogan": "你的家庭酒柜伴侣"
     },
     "login": {
       "kicker": "欢迎回来",
       "title": "欢迎回来",
-      "subtitle": "登录以查看你的酒柜和调酒记录",
+      "subtitle": "登录以查看你的酒柜与今日推荐。",
       "emailLabel": "邮箱",
+      "emailPlaceholder": "alex@example.com",
       "passwordLabel": "密码",
+      "showPassword": "显示密码",
+      "hidePassword": "隐藏密码",
       "submit": "登录",
       "noAccount": "还没有账号？",
       "signupLink": "注册",

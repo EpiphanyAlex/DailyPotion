@@ -23,7 +23,7 @@ export default async function LoginPage({
       <p className="font-ui text-micro font-semibold uppercase text-text-gold">
         {t('kicker')}
       </p>
-      <h1 className="mt-md font-display text-page-title text-ink">
+      <h1 className={`mt-xl text-page-title text-ink ${locale === 'zh' ? 'font-ui font-bold' : 'font-display font-semibold'}`}>
         {t('title')}
       </h1>
       <p className="mt-lg font-body text-body text-ink-soft">{t('subtitle')}</p>

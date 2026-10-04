@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useTransition, type FormEvent } from 'react'
 import { useTranslations } from 'next-intl'
+import { Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { isPasswordLongEnough, isValidEmail } from '@/lib/auth-helpers'
@@ -19,6 +20,7 @@ export function LoginForm({
   const t = useTranslations()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [passwordVisible, setPasswordVisible] = useState(false)
   const [touched, setTouched] = useState({ email: false, password: false })
   const [error, setError] = useState<string | null>(null)
   const [pending, start] = useTransition()
@@ -37,11 +39,12 @@ export function LoginForm({
     })
   }
   return (
-    <form onSubmit={submit} className="mt-xxl flex flex-col gap-xl" noValidate>
+    <form onSubmit={submit} className="mt-xl flex flex-col gap-xl" noValidate>
       <Input
         type="email"
         autoComplete="email"
         label={t('auth.login.emailLabel')}
+        placeholder={t('auth.login.emailPlaceholder')}
         value={email}
         onChange={(e) => {
           setEmail(e.target.value)
@@ -56,9 +59,20 @@ export function LoginForm({
       />
       <div>
         <Input
-          type="password"
+          type={passwordVisible ? 'text' : 'password'}
           autoComplete="current-password"
           label={t('auth.login.passwordLabel')}
+          trailing={
+            <button
+              type="button"
+              onClick={() => setPasswordVisible((visible) => !visible)}
+              aria-label={t(passwordVisible ? 'auth.login.hidePassword' : 'auth.login.showPassword')}
+              aria-pressed={passwordVisible}
+              className="flex size-8 items-center justify-center rounded-sm text-ink-faint hover:text-ink focus-visible:focus-ring"
+            >
+              {passwordVisible ? <EyeOff className="size-4" aria-hidden="true" /> : <Eye className="size-4" aria-hidden="true" />}
+            </button>
+          }
           value={password}
           onChange={(e) => {
             setPassword(e.target.value)
