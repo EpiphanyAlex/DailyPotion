@@ -25,7 +25,9 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
     previousFocusRef.current = document.activeElement as HTMLElement | null
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    panelRef.current?.querySelector<HTMLElement>(focusableSelector)?.focus()
+    const preferredFocus = panelRef.current?.querySelector<HTMLElement>('[autofocus]')
+    const firstFocusable = preferredFocus ?? panelRef.current?.querySelector<HTMLElement>(focusableSelector)
+    firstFocusable?.focus()
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
