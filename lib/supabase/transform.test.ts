@@ -41,7 +41,7 @@ const ownedCatalog: UserBottleRow = {
   volume_ml: null,
   status: 'owned',
   created_at: '2026-07-01T10:00:00+00:00',
-  bottles_catalog: { slug: 'roku-gin', name_zh: 'Roku 六金酒', name_en: 'Roku Gin', spirit_type_id: 'st-gin', image_url: null },
+  bottles_catalog: { id: 'b-roku', slug: 'roku-gin', name_zh: 'Roku 六金酒', name_en: 'Roku Gin', brand: 'Suntory', volume_ml: 700, spirit_type_id: 'st-gin', image_url: null },
 }
 
 const ownedCustom: UserBottleRow = {
@@ -65,7 +65,7 @@ const wishlistCatalog: UserBottleRow = {
   volume_ml: null,
   status: 'wishlist',
   created_at: '2026-07-03T10:00:00+00:00',
-  bottles_catalog: { slug: 'campari-bitter', name_zh: '金巴利苦味利口酒', name_en: 'Campari Bitter', spirit_type_id: 'st-campari', image_url: null },
+  bottles_catalog: { id: 'b-campari', slug: 'campari-bitter', name_zh: '金巴利苦味利口酒', name_en: 'Campari Bitter', brand: 'Campari', volume_ml: 700, spirit_type_id: 'st-campari', image_url: null },
 }
 
 describe('toRecipeForMatching', () => {
