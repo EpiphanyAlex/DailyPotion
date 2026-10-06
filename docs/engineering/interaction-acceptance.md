@@ -1,6 +1,6 @@
 # 交互验收场景
 
-状态：验收契约；页面仍是占位页，下列浏览器/组件测试应在对应阶段随真实组件一起提交。测试替换真实查询边界并使用可控的延迟/失败响应，断言用户可见结果和写入次数；不以空洞渲染快照替代行为断言。规则来源为各 feature PRD 与 [ADR-0002](../adr/0002-web-query-lifecycle.md)。
+状态：验收契约；Phase 5 酒柜的浏览器记录见 [Phase 5 验收](phase-5-acceptance.md)，其他业务场景按阶段落地。测试替换真实查询边界并使用可控的延迟/失败响应，断言用户可见结果和写入次数；不以空洞渲染快照替代行为断言。规则来源为各 feature PRD 与 [ADR-0002](../adr/0002-web-query-lifecycle.md)。
 
 | 场景与落地时机 | 设置与操作 | 必须断言 |
 |---|---|---|
@@ -10,4 +10,4 @@
 | 双账号隔离；查询层已实现，Phase 4 Auth + Phase 5/7 私人页补浏览器验收 | `npm run db:verify` 在本地 Supabase 创建 A/B 两个账号，检查三类私人数据及酒瓶/记录的跨账号改删；页面阶段再执行 A 登出、B 登录和迟到响应场景 | 现有查询层验收证明 B 读不到 A 的酒瓶/收藏/记录，越权改删被拒；待页面测试证明 B 的缓存看不到 A 数据，A 的迟到响应不能注入 B 页面。不能仅 mock RLS |
 | 写入成功、重取失败；首个真实写入页 Phase 5，Phase 7 复用 | 写入成功后使重取报错，点击“重试读取” | 用户知道写入已完成但显示尚未确认；只重发读取，不再次写入 |
 
-首个真实页面是 Phase 4 Auth。它的视觉验收按 [视觉验收](visual-acceptance.md) 开始；上表业务场景依各阶段启用。`supabase/tests/database/02_security_contract.test.sql` 检查 RLS 策略结构，`scripts/verify-queries.ts` 已用两个真实测试账号检查数据库行为；浏览器会话切换尚待 Phase 4–7。
+首个真实页面是 Phase 4 Auth。它的视觉验收按 [视觉验收](visual-acceptance.md) 开始；上表业务场景依各阶段启用。`supabase/tests/database/02_security_contract.test.sql` 检查 RLS 策略结构，`scripts/verify-queries.ts` 已用两个真实测试账号检查数据库行为；酒柜浏览器会话切换在 Phase 5 验收，收藏与记录在 Phase 7 补齐。

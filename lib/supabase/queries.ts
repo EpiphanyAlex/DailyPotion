@@ -14,14 +14,18 @@ export type RecipeWithIngredients = RecipeRow & { recipe_ingredients: RecipeIngr
 
 // catalog 瓶经 join 取 spirit_type_id（裁定口径 2），自定义瓶该字段为 null
 export type UserBottleRow = Database['public']['Tables']['user_bottles']['Row'] & {
-  bottles_catalog: Pick<BottleCatalogRow, 'slug' | 'name_zh' | 'name_en' | 'spirit_type_id' | 'image_url'> | null
+  bottles_catalog: Pick<
+    BottleCatalogRow,
+    'id' | 'slug' | 'name_zh' | 'name_en' | 'brand' | 'volume_ml' | 'spirit_type_id' | 'image_url'
+  > | null
 }
 
 export type PourLogWithRecipe = Database['public']['Tables']['user_pour_logs']['Row'] & {
   recipes: Pick<RecipeRow, 'slug' | 'name_zh' | 'name_en'>
 }
 
-const USER_BOTTLE_SELECT = '*, bottles_catalog(slug, name_zh, name_en, spirit_type_id, image_url)'
+const USER_BOTTLE_SELECT =
+  '*, bottles_catalog(id, slug, name_zh, name_en, brand, volume_ml, spirit_type_id, image_url)'
 
 export class DataMutationNotFoundError extends Error {
   constructor(table: 'user_bottles' | 'user_pour_logs', id: string) {

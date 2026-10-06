@@ -1,12 +1,24 @@
-import { useTranslations } from 'next-intl'
+import { CabinetClient } from '@/components/cabinet/cabinet-client'
+import type { Locale } from '@/lib/matching'
+import { createServerSupabase } from '@/lib/supabase/server'
+import { fetchRecipesWithIngredients, fetchSpiritTypes, fetchUserBottles } from '@/lib/supabase/queries'
+import { toRecipeForMatching } from '@/lib/supabase/transform'
 
-export default function CabinetPage() {
-  const t = useTranslations()
+export default async function CabinetPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const sb = await createServerSupabase()
+  const [rows, spiritTypes, recipes] = await Promise.all([
+    fetchUserBottles(sb),
+    fetchSpiritTypes(sb),
+    fetchRecipesWithIngredients(sb),
+  ])
+
   return (
-    <main className="p-xl">
-      <p className="font-ui text-micro uppercase text-text-gold">{t('common.appName')}</p>
-      <h1 className="mt-sm font-display text-page-title text-ink">{t('nav.cabinet')}</h1>
-      <p className="mt-md font-body text-body text-ink-soft">{t('common.comingSoon')}</p>
-    </main>
+    <CabinetClient
+      locale={locale as Locale}
+      initialRows={rows}
+      spiritTypes={spiritTypes}
+      recipes={recipes.map(toRecipeForMatching)}
+    />
   )
 }
