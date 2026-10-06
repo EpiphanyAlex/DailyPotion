@@ -2,7 +2,7 @@
 
 面向家庭调酒爱好者的酒柜管理与鸡尾酒配方推荐 Web 应用。记录家中的酒瓶，按基酒与利口酒匹配现在能调什么、还差什么，再用清晰的双语配方把“家里有一瓶酒”变成“今晚调一杯”。
 
-状态：Phase 1 基础工程与 Phase 2 Supabase 数据层已合入；匹配函数和 10 个业务页面仍待后续阶段实现。架构、交互与视觉验收约定见下方文档地图。更新于 2026-10-02。
+状态：Phase 1–4 已合入；Phase 5 酒柜已实现官方/自定义酒瓶、搜索筛选、状态切换、移除影响、乐观回滚与权威重读。下一阶段为 Phase 6 配方浏览。验收记录见 `docs/engineering/phase-5-acceptance.md`。更新于 2026-10-06。
 
 ## 当前基线
 
@@ -25,7 +25,7 @@ npm install
 npm run dev
 ```
 
-打开 [http://localhost:3000](http://localhost:3000)。当前基础页面无需 Supabase 密钥；后续数据阶段使用的变量名已列在 `.env.example`。
+打开 [http://localhost:3000](http://localhost:3000)。启动前按 `.env.example` 配置 Supabase URL 与公开 publishable key 到 `.env.local`。本地数据库使用 Supabase CLI 启动；浏览器验收需要已迁移并载入种子数据的本地实例。
 
 | 命令 | 作用 |
 |---|---|

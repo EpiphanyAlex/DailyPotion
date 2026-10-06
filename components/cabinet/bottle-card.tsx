@@ -25,7 +25,7 @@ export function BottleCard({ bottle, removeConfirm, onToggleStatus, onRequestRem
     : ''
 
   return (
-    <li className="relative flex min-w-0 gap-md rounded-md border border-border bg-paper-raised p-lg transition-colors hover:bg-paper-hover md:flex-col">
+    <li data-bottle-id={bottle.id} className="relative flex min-w-0 gap-md rounded-md border border-border bg-paper-raised p-lg transition-colors hover:bg-paper-hover md:flex-col">
       <div className="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-paper-deep md:aspect-square md:size-auto md:w-full">
         {bottle.imageUrl ? (
           <Image src={bottle.imageUrl} alt={bottle.name} fill sizes="(max-width: 767px) 64px, (max-width: 1023px) 45vw, 30vw" className="object-cover" unoptimized />
