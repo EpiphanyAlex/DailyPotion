@@ -17,6 +17,8 @@ const focusableSelector =
 export function Modal({ open, onClose, title, children }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
+  const onCloseRef = useRef(onClose)
+  useEffect(() => { onCloseRef.current = onClose }, [onClose])
   const titleId = useId()
   const t = useTranslations('common')
 
@@ -25,14 +27,14 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
     previousFocusRef.current = document.activeElement as HTMLElement | null
     const previousOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
-    const preferredFocus = panelRef.current?.querySelector<HTMLElement>('[autofocus]')
+    const preferredFocus = panelRef.current?.querySelector<HTMLElement>('[data-autofocus]')
     const firstFocusable = preferredFocus ?? panelRef.current?.querySelector<HTMLElement>(focusableSelector)
     firstFocusable?.focus()
 
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
         event.preventDefault()
-        onClose()
+        onCloseRef.current()
         return
       }
       if (event.key !== 'Tab' || !panelRef.current) return
@@ -58,7 +60,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
       document.body.style.overflow = previousOverflow
       previousFocusRef.current?.focus()
     }
-  }, [open, onClose])
+  }, [open])
 
   if (!open) return null
 
@@ -76,7 +78,7 @@ export function Modal({ open, onClose, title, children }: ModalProps) {
         aria-modal="true"
         aria-labelledby={titleId}
         tabIndex={-1}
-        className="max-h-full w-full max-w-lg overflow-y-auto rounded-md border border-border bg-paper-raised p-xl shadow-floating"
+        className="max-h-full w-full max-w-(--container-lg) overflow-y-auto rounded-md border border-border bg-paper-raised p-xl shadow-floating"
       >
         <div className="mb-lg flex items-center justify-between gap-md">
           <h2 id={titleId} className="font-display text-card-title text-ink">{title}</h2>

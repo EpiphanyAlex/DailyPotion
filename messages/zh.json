@@ -158,6 +158,11 @@
     "statusLabel": "加入为",
     "saveCustom": "保存",
     "backToSearch": "返回搜索",
-    "mutationFailed": "操作失败，界面已恢复原状，请重试。"
+    "mutationFailed": "操作失败，界面已恢复原状，请重试。",
+    "refreshFailed": "修改已保存，但未能重新读取酒柜。请重试读取以确认最新状态。",
+    "retryRefresh": "重试读取",
+    "searchFailed": "暂时无法搜索酒瓶，请重试。",
+    "retrySearch": "重试搜索",
+    "customVolumeInvalid": "容量须为有效的正整数（毫升）"
   }
 }

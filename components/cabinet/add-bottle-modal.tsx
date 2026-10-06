@@ -50,6 +50,8 @@ export function AddBottleModal({
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<BottleCatalogRow[]>([])
   const [searching, setSearching] = useState(false)
+  const [searchFailed, setSearchFailed] = useState(false)
+  const [searchAttempt, setSearchAttempt] = useState(0)
   const [pendingKey, setPendingKey] = useState<string | null>(null)
   const [failed, setFailed] = useState(false)
   const searchSequence = useRef(0)
@@ -58,7 +60,7 @@ export function AddBottleModal({
   const [customTypeId, setCustomTypeId] = useState(initialSpiritTypeId ?? '')
   const [customVolume, setCustomVolume] = useState('')
   const [customStatus, setCustomStatus] = useState<'owned' | 'wishlist'>('owned')
-  const [customErrors, setCustomErrors] = useState<{ name?: boolean; type?: boolean }>({})
+  const [customErrors, setCustomErrors] = useState<{ name?: boolean; type?: boolean; volume?: boolean }>({})
   const [savingCustom, setSavingCustom] = useState(false)
 
   useEffect(() => {
@@ -71,6 +73,7 @@ export function AddBottleModal({
     setQuery('')
     setResults([])
     setSearching(false)
+    setSearchFailed(false)
     setPendingKey(null)
     setFailed(false)
     setCustomName('')
@@ -83,6 +86,7 @@ export function AddBottleModal({
   useEffect(() => {
     const q = query.trim()
     const sequence = ++searchSequence.current
+    setSearchFailed(false)
     if (!open || view !== 'search' || q === '') {
       setResults([])
       setSearching(false)
@@ -94,13 +98,19 @@ export function AddBottleModal({
         const rows = await searchBottlesCatalog(sb, q)
         if (searchSequence.current === sequence) setResults(rows)
       } catch {
-        if (searchSequence.current === sequence) setResults([])
+        if (searchSequence.current === sequence) {
+          setResults([])
+          setSearchFailed(true)
+        }
       } finally {
         if (searchSequence.current === sequence) setSearching(false)
       }
     }, 300)
-    return () => clearTimeout(timer)
-  }, [open, view, query, sb])
+    return () => {
+      clearTimeout(timer)
+      searchSequence.current += 1
+    }
+  }, [open, view, query, sb, searchAttempt])
 
   const visibleResults = useMemo(() => {
     if (spiritTypeFilter !== null) return results.filter((bottle) => bottle.spirit_type_id === spiritTypeFilter)
@@ -123,12 +133,12 @@ export function AddBottleModal({
 
   async function handleSaveCustom() {
     if (savingCustom) return
-    const errors = { name: customName.trim() === '', type: customTypeId === '' }
+    const volume = Number(customVolume)
+    const errors = { name: customName.trim() === '', type: customTypeId === '', volume: customVolume.trim() !== '' && (!Number.isInteger(volume) || volume <= 0 || volume > 2147483647) }
     setCustomErrors(errors)
-    if (errors.name || errors.type) return
+    if (errors.name || errors.type || errors.volume) return
     setFailed(false)
     setSavingCustom(true)
-    const volume = Number(customVolume)
     try {
       const ok = await onAddCustom({
         customName: customName.trim(),
@@ -153,7 +163,7 @@ export function AddBottleModal({
           <input
             id="catalog-search"
             type="search"
-            autoFocus
+            data-autofocus
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t('addSearchPlaceholder')}
@@ -187,7 +197,13 @@ export function AddBottleModal({
           )}
           <ul className="flex max-h-80 flex-col gap-xs overflow-y-auto">
             {searching && <li className="px-md py-sm font-ui text-caption text-ink-faint">{t('searching')}</li>}
-            {!searching && query.trim() !== '' && visibleResults.length === 0 && (
+            {searchFailed && (
+              <li role="alert" className="flex items-center justify-between gap-md rounded-sm bg-danger-soft px-md py-sm font-ui text-caption text-danger">
+                {t('searchFailed')}
+                <Button type="button" variant="secondary" onClick={() => setSearchAttempt((attempt) => attempt + 1)}>{t('retrySearch')}</Button>
+              </li>
+            )}
+            {!searching && !searchFailed && query.trim() !== '' && visibleResults.length === 0 && (
               <li className="px-md py-sm font-ui text-caption text-ink-faint">{t('searchEmpty')}</li>
             )}
             {!searching && visibleResults.map((bottle) => {
@@ -243,7 +259,8 @@ export function AddBottleModal({
           </div>
           <div className="flex flex-col gap-xs">
             <label htmlFor="custom-volume" className="font-ui text-caption font-semibold text-ink-soft">{t('customVolumeLabel')}</label>
-            <input id="custom-volume" type="number" min={1} step={1} value={customVolume} onChange={(event) => setCustomVolume(event.target.value)} className={inputClass} />
+            <input id="custom-volume" type="number" min={1} step={1} value={customVolume} onChange={(event) => setCustomVolume(event.target.value)} aria-invalid={!!customErrors.volume} aria-describedby={customErrors.volume ? 'custom-volume-error' : undefined} className={inputClass} />
+            {customErrors.volume && <p id="custom-volume-error" role="alert" className="font-ui text-caption text-danger">{t('customVolumeInvalid')}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-sm">
             <span className="font-ui text-caption font-semibold text-ink-soft">{t('statusLabel')}</span>

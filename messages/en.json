@@ -158,6 +158,11 @@
     "statusLabel": "Add as",
     "saveCustom": "Save",
     "backToSearch": "Back to search",
-    "mutationFailed": "Something went wrong. Your cabinet was restored — please try again."
+    "mutationFailed": "Something went wrong. Your cabinet was restored — please try again.",
+    "refreshFailed": "Your changes were saved, but the cabinet could not be reloaded. Retry loading to confirm the latest state.",
+    "retryRefresh": "Retry loading",
+    "searchFailed": "Could not search bottles. Please try again.",
+    "retrySearch": "Retry search",
+    "customVolumeInvalid": "Enter a valid positive whole number of millilitres"
   }
 }
