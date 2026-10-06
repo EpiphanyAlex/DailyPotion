@@ -1,11 +1,12 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { runOptimistic } from '@/lib/optimistic'
 import { createClient } from '@/lib/supabase/client'
 import {
   addUserBottle,
+  fetchUserBottles,
   removeUserBottle,
   updateUserBottleStatus,
   type BottleCatalogRow,
@@ -16,6 +17,9 @@ export interface CabinetMutations {
   rows: UserBottleRow[]
   errorKey: 'mutationFailed' | null
   clearError: () => void
+  refreshFailed: boolean
+  refreshing: boolean
+  retryRefresh: () => Promise<void>
   addCatalog: (bottle: BottleCatalogRow, status: 'owned' | 'wishlist') => Promise<boolean>
   addCustom: (input: { customName: string; spiritTypeId: string; volumeMl?: number }, status: 'owned' | 'wishlist') => Promise<boolean>
   toggleStatus: (id: string) => Promise<void>
@@ -30,10 +34,55 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
   const rowsRef = useRef(rows)
   const inFlight = useRef(new Set<string>())
   const [errorKey, setErrorKey] = useState<'mutationFailed' | null>(null)
+  const [refreshFailed, setRefreshFailed] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
+  const readSequence = useRef(0)
+  const needsRefresh = useRef(false)
+  const mounted = useRef(true)
+
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+      readSequence.current += 1
+    }
+  }, [])
 
   function commit(next: UserBottleRow[]) {
+    if (!mounted.current) return
     rowsRef.current = next
     setRows(next)
+  }
+
+  async function refreshRows() {
+    if (!mounted.current || inFlight.current.size > 0) return
+    const sequence = ++readSequence.current
+    setRefreshing(true)
+    try {
+      const authoritativeRows = await fetchUserBottles(sb)
+      if (!mounted.current || sequence !== readSequence.current) return
+      commit(authoritativeRows)
+      setRefreshFailed(false)
+      router.refresh()
+    } catch {
+      if (mounted.current && sequence === readSequence.current) setRefreshFailed(true)
+    } finally {
+      if (mounted.current && sequence === readSequence.current) setRefreshing(false)
+    }
+  }
+
+  function begin(key: string) {
+    inFlight.current.add(key)
+    readSequence.current += 1
+    setRefreshing(false)
+  }
+
+  async function finish(key: string) {
+    inFlight.current.delete(key)
+    if (needsRefresh.current && inFlight.current.size === 0) {
+      needsRefresh.current = false
+      await refreshRows()
+    }
   }
 
   async function addRow(tempRow: UserBottleRow, mutate: () => Promise<UserBottleRow>, catalog: BottleCatalogRow | null): Promise<boolean> {
@@ -42,13 +91,13 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
       mutate,
       rollback: () => commit(rowsRef.current.filter((row) => row.id !== tempRow.id)),
     })
-    if (!result.ok) return false
+    if (!result.ok || !mounted.current) return false
     const saved = {
       ...result.data,
       bottles_catalog: result.data.bottles_catalog ?? catalog,
     } as UserBottleRow
     commit(rowsRef.current.map((row) => row.id === tempRow.id ? saved : row))
-    router.refresh()
+    needsRefresh.current = true
     return true
   }
 
@@ -56,11 +105,14 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
     rows,
     errorKey,
     clearError: () => setErrorKey(null),
+    refreshFailed,
+    refreshing,
+    retryRefresh: refreshRows,
 
     async addCatalog(bottle, status) {
       const key = `catalog:${bottle.id}`
       if (inFlight.current.has(key) || rowsRef.current.some((row) => row.bottle_id === bottle.id)) return false
-      inFlight.current.add(key)
+      begin(key)
       const tempRow = {
         id: `temp-${crypto.randomUUID()}`,
         bottle_id: bottle.id,
@@ -74,11 +126,13 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
       try {
         return await addRow(tempRow, () => addUserBottle(sb, { bottleId: bottle.id }, status), bottle)
       } finally {
-        inFlight.current.delete(key)
+        await finish(key)
       }
     },
 
     async addCustom(input, status) {
+      if (inFlight.current.has('custom')) return false
+      begin('custom')
       const tempRow = {
         id: `temp-${crypto.randomUUID()}`,
         bottle_id: null,
@@ -89,14 +143,18 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
         created_at: new Date().toISOString(),
         bottles_catalog: null,
       } as unknown as UserBottleRow
-      return addRow(tempRow, () => addUserBottle(sb, input, status), null)
+      try {
+        return await addRow(tempRow, () => addUserBottle(sb, input, status), null)
+      } finally {
+        await finish('custom')
+      }
     },
 
     async toggleStatus(id) {
       if (inFlight.current.has(id)) return
       const current = rowsRef.current.find((row) => row.id === id)
       if (!current) return
-      inFlight.current.add(id)
+      begin(id)
       setErrorKey(null)
       const nextStatus: 'owned' | 'wishlist' = current.status === 'owned' ? 'wishlist' : 'owned'
       try {
@@ -105,10 +163,10 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
           mutate: () => updateUserBottleStatus(sb, id, nextStatus),
           rollback: () => commit(rowsRef.current.map((row) => row.id === id ? { ...row, status: current.status } : row)),
         })
-        if (result.ok) router.refresh()
-        else setErrorKey('mutationFailed')
+        if (result.ok) needsRefresh.current = true
+        else if (mounted.current) setErrorKey('mutationFailed')
       } finally {
-        inFlight.current.delete(id)
+        await finish(id)
       }
     },
 
@@ -117,7 +175,7 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
       const index = rowsRef.current.findIndex((row) => row.id === id)
       if (index < 0) return
       const removed = rowsRef.current[index]
-      inFlight.current.add(id)
+      begin(id)
       setErrorKey(null)
       try {
         const result = await runOptimistic({
@@ -129,10 +187,10 @@ export function useCabinetMutations(initialRows: UserBottleRow[]): CabinetMutati
             commit(restored)
           },
         })
-        if (result.ok) router.refresh()
-        else setErrorKey('mutationFailed')
+        if (result.ok) needsRefresh.current = true
+        else if (mounted.current) setErrorKey('mutationFailed')
       } finally {
-        inFlight.current.delete(id)
+        await finish(id)
       }
     },
   }
